@@ -45,6 +45,8 @@ module Bosh::Stemcell
         aws_stages
       when Infrastructure::OpenStack then
         openstack_stages
+      when Infrastructure::SoftLayer then
+        softlayer_stages
       when Infrastructure::Vsphere then
         vsphere_stages
       when Infrastructure::Vcloud then
@@ -114,6 +116,41 @@ module Bosh::Stemcell
       [
         :bosh_package_list
       ]
+    end
+
+    def softlayer_stages
+      if is_centos?
+        [
+          :system_network,
+          :system_open_vm_tools,
+          :system_vsphere_cdrom,
+          :system_parameters,
+          :bosh_clean,
+          :bosh_harden,
+          :bosh_softlayer_agent_settings,
+          :disable_blank_passwords,
+          :bosh_clean_ssh,
+          :image_create,
+          :image_install_grub,
+        ]
+      else
+        [
+          :system_network,
+          :system_open_vm_tools,
+          :system_vsphere_cdrom,
+          # Misc
+          :system_parameters,
+          # Finalisation
+          :bosh_clean,
+          :bosh_harden,
+          :bosh_softlayer_agent_settings,
+          :disable_blank_passwords,
+          :bosh_clean_ssh,
+          # Image/bootloader
+          :image_create,
+          :image_install_grub,
+        ]
+      end
     end
 
     def vsphere_stages

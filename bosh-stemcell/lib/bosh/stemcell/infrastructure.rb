@@ -6,6 +6,8 @@ module Bosh::Stemcell
           OpenStack.new
         when 'aws'
           Aws.new
+        when 'softlayer'
+          SoftLayer.new
         when 'vsphere'
           Vsphere.new
         when 'warden'
@@ -58,6 +60,16 @@ module Bosh::Stemcell
 
       def additional_cloud_properties
         {'auto_disk_config' => true}
+      end
+    end
+
+    class SoftLayer < Base
+      def initialize
+        super(name: 'softlayer', hypervisor: 'esxi', default_disk_size: 3072, disk_formats: ['ovf'])
+      end
+
+      def additional_cloud_properties
+        {'root_device_name' => '/dev/sda1'}
       end
     end
 
